@@ -13,6 +13,7 @@
     "astro": "^5.0.2"
   },
   "devDependencies": {
+    "staticrypt": "^3.5.0",
     "wrangler": "^3.92.0"
   }
 }

@@ -47,9 +47,13 @@ jobs:
         id: build_site
         env:
           PUBLIC_COMMIT_HASH: ${{ steps.extract_vars.outputs.sha_short }}
+          STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
         run: |
           npm ci
           npm run build
+          echo "encrypting..."
+          npx staticrypt ./dist/ -r -d ./dist/
+          echo "encrypted!"
           echo "result=built" >> $GITHUB_OUTPUT
 
       - name: Deploy to Cloudflare Pages
