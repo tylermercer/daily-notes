@@ -1,11 +1,27 @@
 ---
-import Welcome from '@components/Welcome.astro';
-import Layout from '@layouts/Base.astro';
+import Layout from "@layouts/Base.astro";
+import { getCollection } from "astro:content";
+import { Puff } from "astro-svg-loaders";
+import type { CollectionEntry } from "astro:content";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const notes = await getCollection("notes");
+
+const latest = notes.sort(
+	(a: CollectionEntry<"notes">, b: CollectionEntry<"notes">) =>
+		a.id > b.id ? -1 : 1,
+)[0];
 ---
 
 <Layout>
-	<Welcome />
+	<main data-latest={latest.id}>
+		<Puff />
+	</main>
 </Layout>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const latest = (document.querySelector("[data-latest]") as HTMLElement)
+			?.dataset.latest;
+
+		window.location.href = `/${latest}`;
+	});
+</script>

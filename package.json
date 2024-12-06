@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.0.1",
-    "astro": "^5.0.3"
+    "astro": "^5.0.3",
+    "astro-svg-loaders": "^5.0.0"
   },
   "devDependencies": {
     "staticrypt": "^3.5.0",
