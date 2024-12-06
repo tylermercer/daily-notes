@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Unsplash API Collection",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

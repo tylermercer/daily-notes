@@ -1,0 +1,15 @@
+meta {
+  name: Get Single Photo
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.unsplash.com/photos/f4sMm6nJiLc
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Client-ID {{unsplashAccessKey}}
+}
