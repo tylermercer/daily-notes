@@ -3,6 +3,7 @@ import Layout from "@layouts/Base.astro";
 import { getCollection } from "astro:content";
 import { Puff } from "astro-svg-loaders";
 import type { CollectionEntry } from "astro:content";
+import UnsplashBackground from "@components/UnsplashBackground.astro";
 
 const notes = await getCollection("notes");
 
@@ -10,15 +11,24 @@ const latest = notes.sort(
 	(a: CollectionEntry<"notes">, b: CollectionEntry<"notes">) =>
 		a.id > b.id ? -1 : 1,
 )[0];
+
+const unsplashUrl =
+	"https://images.unsplash.com/photo-1502571021998-c562c753aedc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2ODM3NDZ8MHwxfGFsbHx8fHx8fHx8fDE3MzM0OTUwNTR8&ixlib=rb-4.0.3&q=85";
+const unsplashColor = "#0c5959";
 ---
 
 <Layout>
 	<main data-latest={latest.id}>
-		<Puff />
+		<UnsplashBackground
+			unsplashUrl={unsplashUrl}
+			unsplashColor={unsplashColor}
+		>
+			<Puff />
+		</UnsplashBackground>
 	</main>
 </Layout>
 <script>
-	document.addEventListener('DOMContentLoaded', () => {
+	document.addEventListener("DOMContentLoaded", () => {
 		const latest = (document.querySelector("[data-latest]") as HTMLElement)
 			?.dataset.latest;
 
