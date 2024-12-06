@@ -56,7 +56,7 @@ jobs:
         env:
           STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
         run: |
-          npx staticrypt ./dist/ -r
+          npm run encrypt
 
       - name: Deploy to Cloudflare Pages
         id: deploy
