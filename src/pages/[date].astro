@@ -38,7 +38,9 @@ const unsplashColor = photo.color ?? "#000000";
 
 <Layout>
     <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
-        <h1>{date}</h1>
-        <Content />
+        <main class="u-guttered">
+            <h1>{date}</h1>
+            <Content />
+        </main>
     </UnsplashBackground>
 </Layout>
