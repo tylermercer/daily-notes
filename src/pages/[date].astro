@@ -1,12 +1,14 @@
 ---
-import Layout from '@layouts/Base.astro';
-import type { CollectionEntry } from 'astro:content';
-import { getCollection, render } from 'astro:content';
+import UnsplashBackground from "@components/UnsplashBackground.astro";
+import Layout from "@layouts/Base.astro";
+import unsplash from "@utils/unsplash";
+import type { CollectionEntry } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const notes = await getCollection('notes');
+    const notes = await getCollection("notes");
 
-    return notes.map((note: CollectionEntry<'notes'>) => ({
+    return notes.map((note: CollectionEntry<"notes">) => ({
         params: { date: note.id },
         props: { note, date: note.id },
     }));
@@ -14,13 +16,29 @@ export async function getStaticPaths() {
 
 export type Props = {
     date: string;
-    note: CollectionEntry<'notes'>;
-}
+    note: CollectionEntry<"notes">;
+};
 
 const { note, date } = Astro.props;
 const { Content } = await render(note);
+
+const photo = await unsplash.photos
+    .get({ photoId: note.data.unsplashId })
+    .then((result) => {
+        if (result.errors) {
+            throw new Error(result.errors.join(", "));
+        } else {
+            return result.response;
+        }
+    });
+
+const unsplashUrl = photo.urls.regular;
+const unsplashColor = photo.color ?? "#000000";
 ---
+
 <Layout>
-    <h1>{date}</h1>
-    <Content />
+    <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
+        <h1>{date}</h1>
+        <Content />
+    </UnsplashBackground>
 </Layout>
