@@ -5,6 +5,9 @@ encrypted/
 # generated types
 .astro/
 
+# temp files
+.wrangler/
+
 # dependencies
 node_modules/
 
