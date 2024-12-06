@@ -47,25 +47,26 @@ jobs:
         id: build_site
         env:
           PUBLIC_COMMIT_HASH: ${{ steps.extract_vars.outputs.sha_short }}
-          STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
         run: |
           npm ci
           npm run build
-          echo "encrypting..."
-          npx staticrypt ./dist/ -r -d ./dist/
-          echo "encrypted!"
-          echo "result=built" >> $GITHUB_OUTPUT
+
+      - name: Encrypt site
+        id: encrypt_site
+        env:
+          STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
+        run: |
+          npx staticrypt ./dist/ -r
 
       - name: Deploy to Cloudflare Pages
         id: deploy
-        if: steps.build_site.outputs.result == 'built'
         run: npx wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Add preview URL to pull request
-        if: github.event_name == 'pull_request' && steps.build_site.outputs.result == 'built'
+        if: github.event_name == 'pull_request'
         uses: thollander/actions-comment-pull-request@v2
         with:
           comment_tag: deploy_preview
