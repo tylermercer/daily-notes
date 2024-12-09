@@ -65,6 +65,8 @@ const photo = await unsplash.photos
 
 const unsplashUrl = photo.urls.regular;
 const unsplashColor = photo.color ?? "#000000";
+
+const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) => note && `/${note.id}`;
 ---
 
 <Layout>
@@ -78,13 +80,13 @@ const unsplashColor = photo.color ?? "#000000";
                         <a href={isLatest ? undefined : "/"}>Latest</a>
                     </li>
                     <li>
-                        <a href={next?.id}>Next</a>
+                        <a href={getPathFromOptionalNote(next)}>Next</a>
                     </li>
                     <li>
-                        <a href={prev?.id}>Previous</a>
+                        <a href={getPathFromOptionalNote(prev)}>Previous</a>
                     </li>
                     <li>
-                        <a href={oldest?.id}>Oldest</a>
+                        <a href={getPathFromOptionalNote(oldest)}>Oldest</a>
                     </li>
                 </ul>
             </nav>
