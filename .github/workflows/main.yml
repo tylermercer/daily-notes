@@ -47,6 +47,7 @@ jobs:
         id: build_site
         env:
           PUBLIC_COMMIT_HASH: ${{ steps.extract_vars.outputs.sha_short }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
           npm ci
           npm run build
