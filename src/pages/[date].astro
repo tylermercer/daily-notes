@@ -1,6 +1,11 @@
 ---
 import UnsplashBackground from "@components/UnsplashBackground.astro";
 import Layout from "@layouts/Base.astro";
+import filterOutFutureNotesIfProduction from "@utils/filterOutFutureNotesIfProduction";
+import getNoteDate from "@utils/getNoteDate";
+import sortByDate from "@utils/sortByDate";
+import type { WithNextAndPrev } from "@utils/toWithNextAndPrev";
+import toWithNextAndPrev from "@utils/toWithNextAndPrev";
 import unsplash from "@utils/unsplash";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
@@ -8,18 +13,44 @@ import { getCollection, render } from "astro:content";
 export async function getStaticPaths() {
     const notes = await getCollection("notes");
 
-    return notes.map((note: CollectionEntry<"notes">) => ({
-        params: { date: note.id },
-        props: { note, date: note.id },
-    }));
+    const sortedNotes = toWithNextAndPrev(
+        filterOutFutureNotesIfProduction(sortByDate(notes)),
+        true,
+    );
+
+    const oldest = sortedNotes.at(-1)!.item;
+
+    return sortedNotes.map(
+        (
+            noteWithNextAndPrev: WithNextAndPrev<CollectionEntry<"notes">>,
+            i,
+        ) => ({
+            params: { date: noteWithNextAndPrev.item.id },
+            props: {
+                isLatest: i === 0,
+                noteWithNextAndPrev,
+                date: noteWithNextAndPrev.item.id,
+                oldest:
+                    oldest.id !== noteWithNextAndPrev.item.id
+                        ? oldest
+                        : undefined,
+            },
+        }),
+    );
 }
 
 export type Props = {
     date: string;
-    note: CollectionEntry<"notes">;
+    noteWithNextAndPrev: WithNextAndPrev<CollectionEntry<"notes">>;
+    oldest?: CollectionEntry<"notes">;
+    isLatest: boolean;
 };
 
-const { note, date } = Astro.props;
+const { noteWithNextAndPrev, oldest, isLatest } = Astro.props;
+const { item: note, next, prev } = noteWithNextAndPrev;
+
+const date = getNoteDate(note);
+
 const { Content } = await render(note);
 
 const photo = await unsplash.photos
@@ -39,8 +70,24 @@ const unsplashColor = photo.color ?? "#000000";
 <Layout>
     <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
         <main class="u-guttered">
-            <h1>{date}</h1>
+            <h1>{date.toLocaleDateString()}</h1>
             <Content />
+            <nav aria-label="Next and previous notes">
+                <ul>
+                    <li>
+                        <a href={isLatest ? undefined : "/"}>Latest</a>
+                    </li>
+                    <li>
+                        <a href={next?.id}>Next</a>
+                    </li>
+                    <li>
+                        <a href={prev?.id}>Previous</a>
+                    </li>
+                    <li>
+                        <a href={oldest?.id}>Oldest</a>
+                    </li>
+                </ul>
+            </nav>
         </main>
     </UnsplashBackground>
 </Layout>
