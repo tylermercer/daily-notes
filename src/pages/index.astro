@@ -6,13 +6,12 @@ import type { CollectionEntry } from "astro:content";
 import UnsplashBackground from "@components/UnsplashBackground.astro";
 import { Image } from "astro:assets";
 import compass from "@assets/compass-background.png";
+import filterOutFutureNotesIfProduction from "@utils/filterOutFutureNotesIfProduction";
+import sortByDate from "@utils/sortByDate";
 
-const notes = await getCollection("notes");
+const notes = sortByDate(filterOutFutureNotesIfProduction(await getCollection("notes")));
 
-const latest = notes.sort(
-	(a: CollectionEntry<"notes">, b: CollectionEntry<"notes">) =>
-		a.id > b.id ? -1 : 1,
-)[0];
+const latest = notes[0];
 
 const unsplashUrl =
 	"https://images.unsplash.com/photo-1502571021998-c562c753aedc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2ODM3NDZ8MHwxfGFsbHx8fHx8fHx8fDE3MzM0OTUwNTR8&ixlib=rb-4.0.3&q=85";
