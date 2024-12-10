@@ -97,11 +97,14 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
 </Layout>
 
 <style lang="scss">
+    main {
+        padding-bottom: 4em;
+    }
     nav {
-        // display: none;
-        position: sticky;
-        top: 100vh;
-        top: 100svh;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         font-size: 2em;
         font-family: var(--heading);
         ul {
