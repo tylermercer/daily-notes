@@ -3,6 +3,13 @@
 .l-stack:after {
     grid-area: 1 / 1 / 2 / 2;
     position: relative;
+    align-self: center;
+    justify-self: center;
+}
+.l-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
 }
 .l-switcher {
     display: flex;

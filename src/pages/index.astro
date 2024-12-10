@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import { Puff } from "astro-svg-loaders";
 import type { CollectionEntry } from "astro:content";
 import UnsplashBackground from "@components/UnsplashBackground.astro";
+import { Image } from "astro:assets";
+import compass from "@assets/compass-background.png";
 
 const notes = await getCollection("notes");
 
@@ -19,29 +21,51 @@ const unsplashColor = "#0c5959";
 
 <Layout>
 	<UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
-		<main data-latest={latest.id}>
-			<Puff />
+		<main data-latest={latest.id} class="u-guttered">
+			<div class="container l-stack">
+				<Image class="compass" src={compass} alt="" />
+				<Puff />
+				<p>Loading&hellip;</p>
+			</div>
 		</main>
 	</UnsplashBackground>
 </Layout>
 <script>
 	document.addEventListener("DOMContentLoaded", () => {
-		const latest = (document.querySelector("[data-latest]") as HTMLElement).dataset.latest;
-
-		window.location.href = `/${latest}`;
+		const latest = (document.querySelector("[data-latest]") as HTMLElement)
+			.dataset.latest;
+		requestIdleCallback(() => {
+			setTimeout(() => {
+				window.location.href = `/${latest}`;
+			}, 500 + Math.random() * 3000);
+		});
 	});
 </script>
 
 <style>
 	main {
-		width: 100%;
-		height: 100%;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		height: 100vh;
+		width: 100vw;
 	}
-	main > :global(svg) {
-		width: 100px;
-		height: 100px;
+	p {
+		font-size: var(--step-2);
+	}
+	.container {
+		padding-top: 1rem;
+	}
+	.compass {
+		max-width: 90%;
+		height: auto;
+		opacity: 0.7;
+		transform: translate(-2%, 0.4%);
+	}
+	.container > :global(svg) {
+		opacity: 0.7;
+		width: 80%;
+		height: 80%;
 	}
 </style>
