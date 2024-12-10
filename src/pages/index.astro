@@ -26,8 +26,7 @@ const unsplashColor = "#0c5959";
 </Layout>
 <script>
 	document.addEventListener("DOMContentLoaded", () => {
-		const latest = (document.querySelector("[data-latest]") as HTMLElement)
-			?.dataset.latest;
+		const latest = (document.querySelector("[data-latest]") as HTMLElement).dataset.latest;
 
 		window.location.href = `/${latest}`;
 	});
