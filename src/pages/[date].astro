@@ -19,6 +19,7 @@ export async function getStaticPaths() {
     );
 
     const oldest = sortedNotes.at(-1)!.item;
+    const latest = sortedNotes.at(0)!.item;
 
     return sortedNotes.map(
         (
@@ -27,12 +28,15 @@ export async function getStaticPaths() {
         ) => ({
             params: { date: noteWithNextAndPrev.item.id },
             props: {
-                isLatest: i === 0,
                 noteWithNextAndPrev,
                 date: noteWithNextAndPrev.item.id,
                 oldest:
                     oldest.id !== noteWithNextAndPrev.item.id
                         ? oldest
+                        : undefined,
+                latest:
+                    latest.id !== noteWithNextAndPrev.item.id
+                        ? latest
                         : undefined,
             },
         }),
@@ -43,10 +47,10 @@ export type Props = {
     date: string;
     noteWithNextAndPrev: WithNextAndPrev<CollectionEntry<"notes">>;
     oldest?: CollectionEntry<"notes">;
-    isLatest: boolean;
+    latest?: CollectionEntry<"notes">;
 };
 
-const { noteWithNextAndPrev, oldest, isLatest } = Astro.props;
+const { noteWithNextAndPrev, oldest, latest } = Astro.props;
 const { item: note, next, prev } = noteWithNextAndPrev;
 
 const date = getNoteDate(note);
@@ -80,7 +84,7 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
             <div class="backdrop"></div>
             <ul class="u-guttered">
                 <li>
-                    <a aria-label="Latest" href={isLatest ? undefined : "/"}>&laquo;</a>
+                    <a aria-label="Latest" href={getPathFromOptionalNote(latest)}>&laquo;</a>
                 </li>
                 <li>
                     <a aria-label="Next" href={getPathFromOptionalNote(next)}>&lsaquo;</a>
