@@ -80,16 +80,16 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
             <div class="backdrop"></div>
             <ul class="u-guttered">
                 <li>
-                    <a href={isLatest ? undefined : "/"}>Latest</a>
+                    <a aria-label="Latest" href={isLatest ? undefined : "/"}>&laquo;</a>
                 </li>
                 <li>
-                    <a href={getPathFromOptionalNote(next)}>Next</a>
+                    <a aria-label="Next" href={getPathFromOptionalNote(next)}>&lsaquo;</a>
                 </li>
                 <li>
-                    <a href={getPathFromOptionalNote(prev)}>Previous</a>
+                    <a aria-label="Previous" href={getPathFromOptionalNote(prev)}>&rsaquo;</a>
                 </li>
                 <li>
-                    <a href={getPathFromOptionalNote(oldest)}>Oldest</a>
+                    <a aria-label="Oldest" href={getPathFromOptionalNote(oldest)}>&raquo;</a>
                 </li>
             </ul>
         </nav>
@@ -102,6 +102,7 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
         position: sticky;
         top: 100vh;
         top: 100svh;
+        font-size: 2em;
         ul {
             display: flex;
             gap: 8px;
@@ -111,11 +112,9 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
             margin-bottom: 0;
             padding-top: 0;
             padding-bottom: 0;
-            li {
-                padding: var(--space-s);
-            }
         }
         a {
+            padding: var(--space-s);
             height: 100%;
         }
     }
