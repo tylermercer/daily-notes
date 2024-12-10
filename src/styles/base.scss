@@ -18,12 +18,9 @@ a {
     color: inherit;
     text-decoration-thickness: from-font;
     text-underline-offset: 2px;
-
-    & > .manicule-inline {
-        margin-inline-start: 2px;
-        block-size: 1em;
-        inline-size: 1em;
-        transform: translateY(3px) rotate(-90deg);
+    opacity: 0.5;
+    &[href] {
+        opacity: 1;
     }
 }
 
