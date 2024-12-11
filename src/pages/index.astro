@@ -1,15 +1,16 @@
 ---
 import Layout from "@layouts/Base.astro";
 import { getCollection } from "astro:content";
-import { Puff } from "astro-svg-loaders";
-import type { CollectionEntry } from "astro:content";
+// import { Puff } from "astro-svg-loaders";
 import UnsplashBackground from "@components/UnsplashBackground.astro";
 import { Image } from "astro:assets";
 import compass from "@assets/compass-background.png";
 import filterOutFutureNotesIfProduction from "@utils/filterOutFutureNotesIfProduction";
 import sortByDate from "@utils/sortByDate";
 
-const notes = sortByDate(filterOutFutureNotesIfProduction(await getCollection("notes")));
+const notes = sortByDate(
+	filterOutFutureNotesIfProduction(await getCollection("notes")),
+);
 
 const latest = notes[0];
 
@@ -20,26 +21,29 @@ const unsplashColor = "#0c5959";
 
 <Layout>
 	<UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
-		<main data-latest={latest.id} class="u-guttered">
+		<main {/*data-latest={latest.id}*/} class="u-guttered">
 			<div class="container l-stack">
 				<Image class="compass" src={compass} alt="" />
-				<Puff />
-				<p>Loading&hellip;</p>
+				<!-- <Puff /> -->
+				<p><a href=`/${latest.id}`>Latest Note</a></p>
 			</div>
 		</main>
 	</UnsplashBackground>
 </Layout>
-<script>
+<!-- <script>
 	document.addEventListener("DOMContentLoaded", () => {
 		const latest = (document.querySelector("[data-latest]") as HTMLElement)
 			.dataset.latest;
 		requestIdleCallback(() => {
-			setTimeout(() => {
-				window.location.href = `/${latest}`;
-			}, 500 + Math.random() * 3000);
+			setTimeout(
+				() => {
+					window.location.href = `/${latest}`;
+				},
+				500 + Math.random() * 3000,
+			);
 		});
 	});
-</script>
+</script> -->
 
 <style>
 	main {
@@ -62,9 +66,9 @@ const unsplashColor = "#0c5959";
 		opacity: 0.7;
 		transform: translate(-2%, 0.4%);
 	}
-	.container > :global(svg) {
+	/* .container > :global(svg) {
 		opacity: 0.7;
 		width: 80%;
 		height: 80%;
-	}
+	} */
 </style>
