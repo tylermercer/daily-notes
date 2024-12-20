@@ -59,7 +59,12 @@ h6 {
 }
 
 hr {
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--contrast-color, var(--gray-100));
+    box-shadow:
+        0 0 20px var(--unsplash-color),
+        0 0 10px var(--unsplash-color),
+        0 0 5px var(--unsplash-color),
+        0 0 2px var(--unsplash-color);
 }
 
 small {
