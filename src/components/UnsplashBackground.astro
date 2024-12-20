@@ -19,14 +19,15 @@ const contrastColor = findContrastColor({
     class="background"
     style={`--unsplash-url: url(${unsplashUrl}); --unsplash-color: ${unsplashColor}; --unsplash-contrast-color: ${contrastColor};`}
 >
+    <div class="background-image"></div>
     <slot />
 </div>
 
-<style>
+<style lang="scss">
     .background {
         height: 100%;
         min-height: 100vh;
-        min-height: 100svh;
+        min-height: 100dvh;
         color: var(--unsplash-contrast-color);
         --contrast-color: var(--unsplash-contrast-color);
         text-shadow:
@@ -34,9 +35,18 @@ const contrastColor = findContrastColor({
             0 0 10px var(--unsplash-color),
             0 0 5px var(--unsplash-color),
             0 0 2px var(--unsplash-color);
-        background:
-            var(--unsplash-url) center center / cover no-repeat,
-            var(--unsplash-color);
-        background-attachment: fixed;
+
+        .background-image {
+            z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100svh;
+            background:
+                var(--unsplash-url) center center / cover no-repeat,
+                var(--unsplash-color);
+        }
     }
 </style>
