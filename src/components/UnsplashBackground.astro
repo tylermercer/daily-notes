@@ -23,6 +23,22 @@ const contrastColor = findContrastColor({
     <slot />
 </div>
 
+<script>
+    import { rafDebounce } from "@utils/rafDebounce";
+    const storeScroll = () => {
+        document.documentElement.style.setProperty(
+            "--scroll",
+            `${window.scrollY}`,
+        );
+    };
+
+    document.addEventListener("scroll", rafDebounce(storeScroll), {
+        passive: true,
+    });
+
+    storeScroll();
+</script>
+
 <style lang="scss">
     .background {
         height: 100%;
@@ -42,8 +58,10 @@ const contrastColor = findContrastColor({
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            height: 100svh;
+            height: 100%;
+            transition: filter 0.1s ease-in-out, opacity 0.1s ease-in-out;
+            filter: blur(min(5px, calc(var(--scroll) * 0.04px)));
+            opacity: calc(1 - min(0.1, calc(var(--scroll) * 0.2)));
             background:
                 var(--unsplash-url) center center / cover no-repeat,
                 var(--unsplash-color);
