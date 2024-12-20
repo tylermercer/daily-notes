@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "encrypt": "npx staticrypt ./dist/ -r --template-color-primary \"#0c5959\"  --template-color-secondary \"#99f6ff\" --template-title \"Daily Notes\""
+    "encrypt": "npm staticrypt ./dist/ -r --template-color-primary \"#0c5959\"  --template-color-secondary \"#0c5959\" --template-title \"Daily Notes\""
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.0.1",
