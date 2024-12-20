@@ -74,7 +74,7 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
     note && `/${note.id}`;
 ---
 
-<Layout>
+<Layout unsplashColor={unsplashColor}>
     <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
         <main class="u-guttered">
             <h1>{date.toLocaleDateString()}</h1>
