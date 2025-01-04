@@ -16,8 +16,6 @@ body {
 a {
     line-height: var(--lh-0);
     color: inherit;
-    text-decoration-thickness: from-font;
-    text-underline-offset: 2px;
     opacity: 0.5;
     &[href] {
         opacity: 1;
