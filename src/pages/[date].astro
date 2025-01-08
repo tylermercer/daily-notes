@@ -72,6 +72,11 @@ const unsplashColor = photo.color ?? "#000000";
 
 const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
     note && `/${note.id}`;
+
+const unsplashAttribution = {
+    name: `${photo.user.first_name} ${photo.user.last_name}`,
+    url: photo.user.links.html,
+};
 ---
 
 <Layout unsplashColor={unsplashColor}>
@@ -79,21 +84,52 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
         <main class="u-guttered">
             <h1>{date.toLocaleDateString()}</h1>
             <Content />
+            <div class="attribution">
+                <small>
+                    Photo by{" "}
+                    <a
+                        href={unsplashAttribution.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {unsplashAttribution.name}</a
+                    >{" "}
+                    on{" "}
+                    <a
+                        href="https://unsplash.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Unsplash
+                    </a>
+                </small>
+            </div>
         </main>
         <nav aria-label="Next and previous notes">
             <div class="backdrop"></div>
             <ul class="u-guttered">
                 <li>
-                    <a aria-label="Oldest" href={getPathFromOptionalNote(oldest)}>&laquo;</a>
+                    <a
+                        aria-label="Oldest"
+                        href={getPathFromOptionalNote(oldest)}>&laquo;</a
+                    >
                 </li>
                 <li>
-                    <a aria-label="Previous" href={getPathFromOptionalNote(prev)}>&lsaquo;</a>
+                    <a
+                        aria-label="Previous"
+                        href={getPathFromOptionalNote(prev)}>&lsaquo;</a
+                    >
                 </li>
                 <li>
-                    <a aria-label="Next" href={getPathFromOptionalNote(next)}>&rsaquo;</a>
+                    <a aria-label="Next" href={getPathFromOptionalNote(next)}
+                        >&rsaquo;</a
+                    >
                 </li>
                 <li>
-                    <a aria-label="Latest" href={getPathFromOptionalNote(latest)}>&raquo;</a>
+                    <a
+                        aria-label="Latest"
+                        href={getPathFromOptionalNote(latest)}>&raquo;</a
+                    >
                 </li>
             </ul>
         </nav>
