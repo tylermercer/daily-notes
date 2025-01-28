@@ -3,6 +3,7 @@
     "file-explorer:new-file",
     "daily-notes",
     "daily-notes:goto-next",
-    "daily-notes:goto-prev"
+    "daily-notes:goto-prev",
+    "file-explorer:duplicate-file"
   ]
 }
