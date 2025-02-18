@@ -27,4 +27,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# user-land cache
+.cache/
+
 src/content/.obsidian/workspace.json
