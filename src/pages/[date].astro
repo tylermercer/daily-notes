@@ -58,7 +58,7 @@ const date = getNoteDate(note);
 
 const { Content } = await render(note);
 
-const photo = await getUnsplashPhoto(note.data.unsplashId)
+const photo = await getUnsplashPhoto(note.data.unsplashId);
 
 const unsplashUrl = photo.urls.regular;
 const unsplashColor = photo.color ?? "#000000";
@@ -67,7 +67,9 @@ const getPathFromOptionalNote = (note: CollectionEntry<"notes"> | undefined) =>
     note && `/${note.id}`;
 
 const unsplashAttribution = {
-    name: `${photo.user.first_name} ${photo.user.last_name}`,
+    name: [photo.user.first_name, photo.user.last_name]
+        .filter(Boolean)
+        .join(" "),
     url: photo.user.links.html,
 };
 ---
