@@ -1,14 +1,12 @@
-import { generateCacheKey, getCache } from "lib/cache/BufferCache";
+import {getFileSystemStringCache } from "lib/cache/StringCache";
 import type { Full } from "unsplash-js/dist/methods/photos/types";
 import unsplash from "./unsplash";
+import { generateCacheKey } from "lib/cache/generateCacheKey";
 
-const cache = getCache('unsplash', './.cache/')
+const cache = getFileSystemStringCache('unsplash', './.cache/')
 
 export default async function getUnsplashPhoto(id: string): Promise<Full> {
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-
-    const resultAsBuffer = await cache.getOrCreate(await generateCacheKey({ id }), async () => {
+    return JSON.parse(await cache.getOrCreate(await generateCacheKey({ id }), async () => {
         const result = await unsplash.photos
             .get({ photoId: id })
             .then((result) => {
@@ -18,9 +16,6 @@ export default async function getUnsplashPhoto(id: string): Promise<Full> {
                     return result.response;
                 }
             });
-        const asArray = encoder.encode(JSON.stringify(result));
-        return Buffer.from(asArray.buffer);
-    });
-
-    return JSON.parse(decoder.decode(resultAsBuffer));
+        return JSON.stringify(result);
+    }));
 }
