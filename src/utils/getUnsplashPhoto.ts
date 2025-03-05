@@ -5,7 +5,8 @@ import { generateCacheKey } from "lib/cache/generateCacheKey";
 
 const cache = getFileSystemStringCache('unsplash', './.cache/')
 
-export default async function getUnsplashPhoto(id: string): Promise<Full> {
+export default async function getUnsplashPhoto(unsplashUrl: string): Promise<Full> {
+    const id =  unsplashUrl.slice(-11);
     return JSON.parse(await cache.getOrCreate(await generateCacheKey({ id }), async () => {
         const result = await unsplash.photos
             .get({ photoId: id })
