@@ -29,9 +29,13 @@ jobs:
       - name: Checkout repository
         id: checkout_repo
         uses: actions/checkout@v4
-        # you can omit the next two lines for public repositories, which can be accessed without a personal access token
         with:
+          submodules: recursive
           token: ${{ secrets.GH_PAT }}
+
+      - name: Update content submodule to latest main
+        run: |
+          git submodule update --remote
 
       - name: Cache assets
         uses: actions/cache@v3
