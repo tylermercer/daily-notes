@@ -2,3 +2,7 @@
 	path = src/content
 	url = git@github.com:tylermercer/daily-notes-for-eve-content.git
 	branch = main
+[submodule "lib"]
+	path = lib
+	url = git@github.com:tylermercer/utils.git
+	branch = main
