@@ -72,11 +72,13 @@ const unsplashAttribution = {
         .join(" "),
     url: photo.user.links.html,
 };
+
+const includeExtraBottomPadding = (note.body?.length ?? 0) < 150;
 ---
 
 <Layout unsplashColor={unsplashColor}>
     <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
-        <main class="u-guttered">
+        <main class:list={["u-guttered", { "extra-bottom-padding": includeExtraBottomPadding }]}>
             <h1>{date.toLocaleDateString()}</h1>
             <Content />
             <div class="attribution">
@@ -135,6 +137,9 @@ const unsplashAttribution = {
     main {
         padding-top: 70svh;
         padding-bottom: 8em;
+        &.extra-bottom-padding {
+            padding-bottom: 24em;
+        }
     }
     nav {
         position: fixed;
