@@ -78,7 +78,12 @@ const includeExtraBottomPadding = (note.body?.length ?? 0) < 150;
 
 <Layout unsplashColor={unsplashColor}>
     <UnsplashBackground unsplashUrl={unsplashUrl} unsplashColor={unsplashColor}>
-        <main class:list={["u-guttered", { "extra-bottom-padding": includeExtraBottomPadding }]}>
+        <main
+            class:list={[
+                "u-guttered",
+                { "extra-bottom-padding": includeExtraBottomPadding },
+            ]}
+        >
             <h1>{date.toLocaleDateString()}</h1>
             <Content />
             <div class="attribution">
@@ -114,12 +119,15 @@ const includeExtraBottomPadding = (note.body?.length ?? 0) < 150;
                 <li>
                     <a
                         aria-label="Previous"
+                        rel="prev"
                         href={getPathFromOptionalNote(prev)}>&lsaquo;</a
                     >
                 </li>
                 <li>
-                    <a aria-label="Next" href={getPathFromOptionalNote(next)}
-                        >&rsaquo;</a
+                    <a
+                        aria-label="Next"
+                        rel="next"
+                        href={getPathFromOptionalNote(next)}>&rsaquo;</a
                     >
                 </li>
                 <li>
@@ -132,6 +140,22 @@ const includeExtraBottomPadding = (note.body?.length ?? 0) < 150;
         </nav>
     </UnsplashBackground>
 </Layout>
+
+<script>
+    const currentPage = location.pathname.replaceAll("/", "");
+    const lastReadKey = "lastReadPost";
+    const lastRead = localStorage.getItem(lastReadKey) ?? "2025-05-01";
+
+    // Get the previous link's date
+    const prevLinkEl =
+        document.querySelector<HTMLAnchorElement>('a[rel="prev"]');
+    const prevHref = prevLinkEl?.getAttribute("href"); // e.g. "/2025-06-20/"
+    const prevDate = prevHref?.replaceAll("/", ""); // e.g. "2025-06-20"
+
+    if (prevDate === lastRead && currentPage > lastRead) {
+        localStorage.setItem(lastReadKey, currentPage);
+    }
+</script>
 
 <style lang="scss">
     main {
