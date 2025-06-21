@@ -13,6 +13,7 @@ const notes = sortByDate(
 );
 
 const latest = notes[0];
+const earliest = notes.at(-1)!;
 
 const unsplashUrl =
 	"https://images.unsplash.com/photo-1502571021998-c562c753aedc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w2ODM3NDZ8MHwxfGFsbHx8fHx8fHx8fDE3MzM0OTUwNTR8&ixlib=rb-4.0.3&q=85";
@@ -31,7 +32,14 @@ const unsplashAttribution = {
 			<div class="container l-stack">
 				<Image class="compass" src={compass} alt="" />
 				<!-- <Puff /> -->
-				<p><a href=`/${latest.id}`>Latest Note</a></p>
+				<nav class="main-nav">
+					<p><a href=`/${latest.id}`>Latest Note</a></p>
+					<p>
+						<a class="continue-reading" href=`/${earliest.id}`
+							>Continue Reading</a
+						>
+					</p>
+				</nav>
 				<div class="attribution u-guttered">
 					Photo by{" "}
 					<a
@@ -69,6 +77,37 @@ const unsplashAttribution = {
 	});
 </script> -->
 
+<script>
+	const lastRead = localStorage.getItem("lastReadPost") ?? "2025-05-01";
+	const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+
+	if (lastRead < today) {
+		const nextDate = getNextDate(lastRead);
+		const nextUrl = `/${nextDate}/`;
+
+		// Use HEAD request to check if the page exists
+		fetch(nextUrl, { method: "HEAD" })
+			.then((res) => {
+				if (res.ok) {
+					(
+						document.querySelector(
+							".continue-reading",
+						) as HTMLAnchorElement
+					).href = nextUrl;
+				}
+			})
+			.catch(() => {
+				console.log("Failed to fetch page for " + nextDate);
+			});
+	}
+
+	function getNextDate(dateStr: string): string {
+		const d = new Date(dateStr);
+		d.setDate(d.getDate() + 1);
+		return d.toISOString().slice(0, 10);
+	}
+</script>
+
 <style>
 	main {
 		display: flex;
@@ -78,6 +117,9 @@ const unsplashAttribution = {
 		height: 100vh;
 		height: 100svh;
 		width: 100vw;
+	}
+	nav.main-nav {
+		text-align: center;
 	}
 	p {
 		font-size: var(--step-2);
