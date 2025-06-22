@@ -11,10 +11,10 @@
     "encrypt": "staticrypt ./dist/ -r --template-color-primary \"#0c5959\"  --template-color-secondary \"#0c5959\" --template-title \"Daily Notes\""
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.0.1",
+    "@astrojs/cloudflare": "^12.6.0",
     "@fontsource-variable/dm-sans": "^5.1.1",
     "@fontsource-variable/newsreader": "^5.1.0",
-    "astro": "^5.0.3",
+    "astro": "^5.10.0",
     "astro-svg-loaders": "^5.0.0",
     "color-contrast-finder": "^1.0.2",
     "modern-normalize": "^3.0.1",
