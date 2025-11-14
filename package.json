@@ -21,9 +21,11 @@
     "unsplash-js": "^7.0.19"
   },
   "devDependencies": {
+    "gray-matter": "^4.0.3",
     "patch-package": "^8.0.0",
     "sass-embedded": "^1.82.0",
     "staticrypt": "^3.5.0",
+    "tsx": "^4.20.6",
     "wrangler": "^3.92.0"
   }
 }
