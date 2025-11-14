@@ -3,11 +3,11 @@ import UnsplashBackground from "@components/UnsplashBackground.astro";
 import Layout from "@layouts/Base.astro";
 import filterOutFutureNotesIfProduction from "@utils/filterOutFutureNotesIfProduction";
 import getNoteDate from "@utils/getNoteDate";
+import { getUnsplashIdForDate } from "@utils/getUnsplashIdForDate";
 import getUnsplashPhoto from "@utils/getUnsplashPhoto";
 import sortByDate from "@utils/sortByDate";
 import type { WithNextAndPrev } from "@utils/toWithNextAndPrev";
 import toWithNextAndPrev from "@utils/toWithNextAndPrev";
-import unsplash from "@utils/unsplash";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 
@@ -58,7 +58,9 @@ const date = getNoteDate(note);
 
 const { Content } = await render(note);
 
-const photo = await getUnsplashPhoto(note.data.unsplashId);
+const photo = await getUnsplashPhoto(
+    note.data.unsplashId ?? getUnsplashIdForDate(date),
+);
 
 const unsplashUrl = photo.urls.regular;
 const unsplashColor = photo.color ?? "#000000";
