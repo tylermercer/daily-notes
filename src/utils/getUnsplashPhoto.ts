@@ -3,7 +3,7 @@ import type { Full } from "unsplash-js/dist/methods/photos/types";
 import unsplash from "./unsplash";
 import { generateCacheKey } from "lib/cache/generateCacheKey";
 
-const cache = getFileSystemStringCache('unsplash', './cache/')
+const cache = getFileSystemStringCache('unsplash', './cache/', 'json')
 
 export default async function getUnsplashPhoto(unsplashUrl: string): Promise<Full> {
     const id = unsplashUrl.slice(-11);
