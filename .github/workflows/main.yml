@@ -43,6 +43,23 @@ jobs:
           restore-keys: | # Restore most recent cache
             assets-
 
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+    
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
       - name: Extract variables
         id: extract_vars
         run: | # branch_trunc is the branch truncated to 28 chars, which is the CF deploy preview subdomain length
@@ -59,19 +76,19 @@ jobs:
           PUBLIC_COMMIT_HASH: ${{ steps.extract_vars.outputs.sha_short }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
-          npm ci --ignore-scripts
-          npm run build
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - name: Encrypt site
         id: encrypt_site
         env:
           STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
         run: |
-          npm run encrypt
+          pnpm encrypt
 
       - name: Deploy to Cloudflare Pages
         id: deploy
-        run: npx wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
+        run: pnpm exec wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
