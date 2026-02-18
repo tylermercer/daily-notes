@@ -31,6 +31,6 @@ export function getUnsplashIdForDate(date: Date): string {
         const index = Math.floor((date.getTime() - beginningOfYear) / millisecondsPerDay) % shuffledIds.length;
         const id = shuffledIds[index];
         console.log("Assigned ID for date", date.toISOString().split('T')[0], " at index", index, ":", id);
-        return shuffledIds[date.getTime() / 86400000 % shuffledIds.length];
+        return id;
     }
 }
