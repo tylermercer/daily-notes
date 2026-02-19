@@ -38,6 +38,15 @@ jobs:
           
       - name: Rename content-demo folder to content and wrangler-demo.toml to wrangler.toml
         run: |
+          # Rename all files in src/content-demo to have the current year in their filenames
+          CURRENT_YEAR=$(date +%Y)
+          for file in src/content-demo/*.md; do
+            filename=$(basename "$file")
+            # Assumes filename starts with a 4-digit year (e.g., 2025-01-01.md)
+            new_filename="${CURRENT_YEAR}${filename:4}"
+            mv "$file" "src/content-demo/$new_filename"
+          done
+
           rm -rf ./src/content
           mv ./src/content-demo ./src/content
           rm ./wrangler.toml
