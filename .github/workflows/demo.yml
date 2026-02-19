@@ -8,15 +8,15 @@ name: Build and Deploy Demo
 # - CLOUDFLARE_PROJECT_NAME
 
 on:
-  # schedule: # Run at 15:00 UTC every day
-  #   - cron: "0 15 * * *"
-  # push: # Run on pushes to main
-  #   branches:
-  #     - main
-  # pull_request: # Run on pull requests
-  #   types:
-  #     - opened
-  #     - synchronize
+  schedule: # Run at 15:00 UTC every day
+    - cron: "0 15 * * *"
+  push: # Run on pushes to main
+    branches:
+      - main
+  pull_request: # Run on pull requests
+    types:
+      - opened
+      - synchronize
   workflow_dispatch: # Allows running this workflow manually
 
 jobs:
@@ -69,12 +69,12 @@ jobs:
           PUBLIC_COMMIT_HASH: ${{ steps.extract_vars.outputs.sha_short }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
-          npm ci --ignore-scripts
-          npm run build
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - name: Deploy to Cloudflare Pages
         id: deploy
-        run: npx wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
+        run: pnpm exec wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
