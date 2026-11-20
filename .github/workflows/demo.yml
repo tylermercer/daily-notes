@@ -3,9 +3,7 @@ name: Build and Deploy Demo
 # Expects these secrets to be configured in your GitHub repo:
 # - CLOUDFLARE_API_TOKEN
 # - CLOUDFLARE_ACCOUNT_ID
-# - GH_PAT (for private repos)
-# and these variables:
-# - CLOUDFLARE_PROJECT_NAME
+# - UNSPLASH_ACCESS_KEY
 
 on:
   schedule: # Run at 15:00 UTC every day
@@ -36,7 +34,7 @@ jobs:
           repository: tylermercer/utils
           path: lib
           
-      - name: Rename content-demo folder to content and wrangler-demo.toml to wrangler.toml
+      - name: Rename content-demo folder to content and wrangler-demo.jsonc to wrangler.jsonc
         run: |
           # Rename all files in src/content-demo to have the current year in their filenames
           CURRENT_YEAR=$(date +%Y)
@@ -49,8 +47,8 @@ jobs:
 
           rm -rf ./src/content
           mv ./src/content-demo ./src/content
-          rm ./wrangler.toml
-          mv ./wrangler-demo.toml ./wrangler.toml
+          rm ./wrangler.jsonc
+          mv ./wrangler-demo.jsonc ./wrangler.jsonc
 
       - name: Cache assets
         uses: actions/cache@v3
@@ -81,13 +79,19 @@ jobs:
 
       - name: Extract variables
         id: extract_vars
-        run: | # branch_trunc is the branch truncated to 28 chars, which is the CF deploy preview subdomain length
+        run: | # slugified_branch is the branch slugified and truncated to 28 chars, to fit in the preview subdomain
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "datetime=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
           branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          branch_trunc=${branch:0:28}
+          # Slugify the branch name: replace non-alphanumeric with hyphens, convert to lowercase
+          slugified_branch=$(echo "$branch" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--\+/-/g' | sed 's/^-//;s/-$//')
+          truncated_slugified_branch=${slugified_branch:0:28}
+          # Remove trailing hyphen if truncation caused one
+          if [[ "${truncated_slugified_branch: -1}" == "-" ]]; then
+            truncated_slugified_branch=${truncated_slugified_branch::-1}
+          fi
           echo "branch=${branch}" >> $GITHUB_OUTPUT
-          echo "branch_trunc=${branch_trunc}" >> $GITHUB_OUTPUT
+          echo "slugified_branch=${truncated_slugified_branch}" >> $GITHUB_OUTPUT
 
       - name: Build site
         id: build_site
@@ -98,9 +102,18 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         id: deploy
-        run: pnpm exec wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
+        if: github.event_name != 'pull_request'
+        run: pnpm exec wrangler deploy --strict
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy preview to Cloudflare Workers
+        id: deploy_preview
+        if: github.event_name == 'pull_request'
+        run: pnpm exec wrangler preview --name=${{ steps.extract_vars.outputs.slugified_branch }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -109,13 +122,13 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b
         with:
-          comment_tag: deploy_preview
+          comment-tag: deploy_preview
           mode: recreate
           message: |
-            ## Deployed to Cloudflare Pages! :rocket:
+            ## Deployed to Cloudflare Workers! :rocket:
 
             | Name                    | Result |
             | ----------------------- | - |
-            | **Preview URL**:        | https://${{ steps.extract_vars.outputs.branch_trunc }}.daily-notes-demo.pages.dev |
+            | **Preview URL**:        | https://${{ steps.extract_vars.outputs.slugified_branch }}-daily-notes-demo.tmercer.workers.dev |
             | **Last commit:**        | `${{ steps.extract_vars.outputs.sha_short }}` |
             | **Deployed at**:        | `${{ steps.extract_vars.outputs.datetime }}` |

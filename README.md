@@ -3,7 +3,7 @@
 An opinionated starter for Astro on Cloudflare, based on the setup I use for [Innerhelm](https://innerhelm.com), [Evelyn Escobar Art](https://evelynescobar.art), [my personal site](https://tylermercer.net), and other projects.
 
 - Deploys to Cloudflare's global edge network
-- Uses GitHub actions for its deploy pipeline, powering daily builds and PR previews.
+- Uses GitHub actions for its deploy pipeline, powering daily builds and PR previews (via Workers preview URLs).
 - Uses the [@astrojs/cloudflare](https://docs.astro.build/en/guides/integrations-guide/cloudflare/) adapter and Astro's new intelligent `static` build mode. This allows you to opt-in to SSR on a per-route basis by adding `export const prerender = false` to a route.
 - Provides other niceties to speed up development, outlined [below](#features).
 
@@ -12,26 +12,22 @@ An opinionated starter for Astro on Cloudflare, based on the setup I use for [In
 Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
-Update the project's `name` in `wrangler.toml`. Commit this change, but don't push yet:
+The Cloudflare Worker's name is set by `name` in `wrangler.jsonc` (and `wrangler-demo.jsonc` for the demo site).
 
-```toml
-name = "astroflare" # change this to what you want your Cloudflare project's name to be
-```
-
-Build the site and deploy to Cloudflare. Wrangler will prompt you to create the Pages project as part of this step:
+Build the site and deploy it to Cloudflare Workers:
 
 ```bash
-npm run build
-npx wrangler pages deploy
+pnpm build
+pnpm exec wrangler deploy
 ```
 
 Configure the following secrets in your repository (Settings > Secrets and Variables > Actions > New Repository Secret):
 
 - `CLOUDFLARE_ACCOUNT_ID` - Your Cloudflare account ID. You can get this from the Cloudflare URL after logging in (which will be of the form `dash.cloudflare.com/[account-id]`)
-- `CLOUDFLARE_API_TOKEN` - A Cloudflare API token with the ability to modify your Pages project
+- `CLOUDFLARE_API_TOKEN` - A Cloudflare API token with permission to edit Workers
 - `GH_PAT` - A GitHub Personal Access Token with read-only access to your repo's contents (for private repos).
 
 Push your repository to Github! You should see a pipeline run appear in the Actions tab of your repository. Once this completes successfully, your project is ready for development.

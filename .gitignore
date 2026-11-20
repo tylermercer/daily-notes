@@ -31,3 +31,6 @@ pnpm-debug.log*
 .cache/
 
 src/content/.obsidian/workspace.json
+
+# generated worker types
+worker-configuration.d.ts

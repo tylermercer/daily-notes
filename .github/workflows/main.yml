@@ -1,11 +1,11 @@
-name: Build and Deploy to Cloudflare Pages
+name: Build and Deploy to Cloudflare Workers
 
 # Expects these secrets to be configured in your GitHub repo:
 # - CLOUDFLARE_API_TOKEN
 # - CLOUDFLARE_ACCOUNT_ID
-# - GH_PAT (for private repos)
-# and these variables:
-# - CLOUDFLARE_PROJECT_NAME
+# - GH_PAT (for the private content submodule)
+# - UNSPLASH_ACCESS_KEY
+# - STATICRYPT_PWD
 
 on:
   schedule: # Run at 15:00 UTC every day
@@ -85,10 +85,12 @@ jobs:
           STATICRYPT_PASSWORD: ${{ secrets.STATICRYPT_PWD }}
         run: |
           pnpm encrypt
+          # Replace the built files with their encrypted versions
+          cp -r ./encrypted/client/. ./dist/client/
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         id: deploy
-        run: pnpm exec wrangler pages deploy --branch=${{ steps.extract_vars.outputs.branch }}
+        run: pnpm exec wrangler deploy --strict
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
