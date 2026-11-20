@@ -104,7 +104,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         id: deploy
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main'
         run: pnpm exec wrangler deploy --strict
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -112,7 +112,7 @@ jobs:
 
       - name: Deploy preview to Cloudflare Workers
         id: deploy_preview
-        if: github.event_name == 'pull_request'
+        if: github.ref != 'refs/heads/main'
         run: pnpm exec wrangler preview --name=${{ steps.extract_vars.outputs.slugified_branch }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
