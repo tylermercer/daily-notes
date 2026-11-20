@@ -5,17 +5,15 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: cloudflare(),
-  vite: {
-    ssr: {
-      external: [
-        'astro/container',
-        'crypto',
-        'fs',
-        'path',
-        'sharp',
-        'esbuild',
-      ].flatMap(id => [id, `node:${id}`]),
-    },
-  }
+  output: "static",
+  // Keep Astro 5's lossless whitespace compression (Astro 7 defaults to JSX whitespace rules,
+  // which can drop meaningful spaces between text and expressions)
+  compressHTML: true,
+  session: {
+    driver: "memory",
+  },
+  adapter: cloudflare({
+    imageService: 'compile',
+    prerenderEnvironment: 'node',
+  }),
 });
